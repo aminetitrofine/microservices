@@ -1,0 +1,4 @@
+/keys
+.terraform.lock.hcl
+.terraform
+terraform.tfvars
