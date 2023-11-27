@@ -1,0 +1,55 @@
+---
+- name: Install Docker on Debian 10
+  hosts: test-machine
+  become: yes
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Install required dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
+        state: present
+
+    - name: Update package cache after adding Docker repository
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Add user to the docker group
+      user:
+        name: "{{ ansible_ssh_user }}"
+        groups: docker
+        append: yes
+      when: ansible_ssh_user != 'root'
+    
+    - name: Apply group changes for Docker without logging out
+      command: newgrp docker
+      args:
+        creates: /var/run/docker.sock
+      when: ansible_ssh_user != 'root'
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
