@@ -1,3 +1,9 @@
+# Definition of local variables
+locals {
+  cluster_name     = google_container_cluster.my_cluster.name
+}
+
+
 resource "google_container_cluster" "my_cluster" {
 
   name     = var.cluster-name
@@ -54,6 +60,36 @@ resource "google_container_node_pool" "primary_nodes" {
 
   }
 }
+# Get credentials for cluster
+module "gcloud" {
+  source  = "terraform-google-modules/gcloud/google"
+  version = "~> 3.0"
+
+  platform              = "linux"
+  additional_components = ["kubectl"]
+
+  create_cmd_entrypoint = "gcloud"
+  create_cmd_body = "container clusters get-credentials online-boutique --zone us-central1-a --project spatial-shore-354923"
+}
+
+resource "null_resource" "install_argocd" {
+  provisioner "local-exec" {
+    interpreter = ["bash", "-exc"]
+    command = <<-EOT
+      kubectl create namespace argocd
+      kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+      kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+    EOT
+  }
+
+  depends_on = [
+    module.gcloud,
+    google_container_cluster.my_cluster
+
+  ]
+}
+
+
 resource "google_compute_instance" "vm_instance" {
   name         = "test-machine"
   machine_type = "e2-standard-2"

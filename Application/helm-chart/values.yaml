@@ -43,7 +43,7 @@ seccompProfile:
   type: RuntimeDefault
 
 adService:
-  create: true
+  create: false
   name: adservice
   resources:
     requests:
@@ -87,7 +87,7 @@ currencyService:
       memory: 128Mi
 
 emailService:
-  create: true
+  create: false
   name: emailservice
   resources:
     requests:
@@ -123,7 +123,7 @@ frontend:
       memory: 128Mi
 
 loadGenerator:
-  create: true
+  create: false
   name: loadgenerator
   checkFrontendInitContainer: true
   resources:
@@ -159,7 +159,7 @@ productCatalogService:
       memory: 128Mi
 
 recommendationService:
-  create: true
+  create: false
   name: recommendationservice
   resources:
     requests:
