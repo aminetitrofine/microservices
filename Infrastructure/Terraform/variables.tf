@@ -13,11 +13,11 @@ variable "zone" {
   default     = "us-central1-a"
 }
 
-variable "credentials-path" {
+variable "credentials_path" {
   default     = "./../../keys/spatial-shore-354923-e11efaceba2c.json"
 }
 
-variable "cluster-name" {
+variable "cluster_name" {
     default = "online-boutique"
 }
 

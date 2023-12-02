@@ -1,0 +1,18 @@
+---
+- name: Install Docker on Debian 10
+  hosts: test-machine
+  remote_user: devops-admin
+  become: no
+
+  tasks:
+    - name: Copy local directory to remote machine
+      ansible.builtin.copy:
+        src: /home/titrofine/microservices/Application/src/loadgenerator
+        dest: /home/devops-admin/
+
+    - name: Start Docker Compose service with scale
+      ansible.builtin.docker_compose:
+        project_src: /home/devops-admin/loadgenerator
+        state: present
+        scale:
+          worker: 4

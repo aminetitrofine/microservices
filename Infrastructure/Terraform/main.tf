@@ -6,7 +6,7 @@ locals {
 
 resource "google_container_cluster" "my_cluster" {
 
-  name     = var.cluster-name
+  name     = var.cluster_name
   location = var.zone
   initial_node_count       = 1
   remove_default_node_pool = true
@@ -17,9 +17,9 @@ resource "google_container_cluster" "my_cluster" {
 
 }
 resource "google_container_node_pool" "primary_nodes" {
-  name       = "${var.cluster-name}-node-pool"
+  name       = "${var.cluster_name}-node-pool"
   location   = var.zone
-  cluster    = var.cluster-name
+  cluster    = var.cluster_name
   node_count = var.node_count
 
   management {
@@ -38,7 +38,6 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 
 
-  depends_on = [google_container_cluster.my_cluster]
   node_config {
     preemptible  = true
     oauth_scopes = [
@@ -56,9 +55,8 @@ resource "google_container_node_pool" "primary_nodes" {
       disable-legacy-endpoints = "true"
     }
 
-
-
   }
+  depends_on = [google_container_cluster.my_cluster]
 }
 # Get credentials for cluster
 module "gcloud" {
@@ -70,6 +68,8 @@ module "gcloud" {
 
   create_cmd_entrypoint = "gcloud"
   create_cmd_body = "container clusters get-credentials online-boutique --zone us-central1-a --project spatial-shore-354923"
+  
+
 }
 
 resource "null_resource" "install_argocd" {
@@ -88,6 +88,7 @@ resource "null_resource" "install_argocd" {
 
   ]
 }
+
 
 
 resource "google_compute_instance" "vm_instance" {
@@ -109,7 +110,9 @@ resource "google_compute_instance" "vm_instance" {
   metadata = {
     ssh-keys = "${var.vm_ssh_user}:${file(var.vm_ssh_pub_key_file)}"
   }
-  
+  depends_on = [
+    google_compute_address.external_ip
+  ]
 
 }
 resource "google_compute_address" "external_ip" {
