@@ -51,7 +51,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - {{ .Values.currencyService.name }}
+                - {{ .Values.productCatalogService.name }}
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: server
