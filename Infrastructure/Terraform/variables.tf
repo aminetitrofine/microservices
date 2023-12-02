@@ -30,7 +30,7 @@ variable "minNode" {
 }
 
 variable "maxNode" {
-    default = 3
+    default = 4
 }
 variable "vm_ssh_user" {
     default = "devops-admin"
