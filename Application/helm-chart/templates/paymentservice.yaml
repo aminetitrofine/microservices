@@ -19,6 +19,7 @@ metadata:
   name: {{ .Values.paymentService.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.paymentService.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.paymentService.name }}

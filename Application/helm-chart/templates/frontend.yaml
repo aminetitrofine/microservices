@@ -19,6 +19,7 @@ metadata:
   name: {{ .Values.frontend.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.frontend.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.frontend.name }}

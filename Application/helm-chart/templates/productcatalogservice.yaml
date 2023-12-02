@@ -19,6 +19,7 @@ metadata:
   name: {{ .Values.productCatalogService.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.productCatalogService.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.productCatalogService.name }}

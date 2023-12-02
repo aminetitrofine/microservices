@@ -19,6 +19,7 @@ metadata:
   name: {{ .Values.checkoutService.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.checkoutService.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.checkoutService.name }}

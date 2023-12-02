@@ -17,6 +17,7 @@ metadata:
   name: {{ .Values.cartService.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: {{ .Values.cartService.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.cartService.name }}

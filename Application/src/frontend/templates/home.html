@@ -13,7 +13,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<head>
+  <style>
+    .black-friday-banner {
+      background-color: #ff6600; /* Eye-catching color, you can change this */
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      margin: 20px auto; /* Center the banner horizontally with top and bottom margin */
+      max-width: 600px; /* Limit the width for better readability on larger screens */
+      border-radius: 10px; /* Add rounded corners for a modern look */
+    }
 
+    .black-friday-banner h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .black-friday-banner p {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
 {{ define "home" }}
 
 {{ template "header" . }}
@@ -23,8 +45,13 @@
   </span>
 </div>
 <main role="main" class="home">
-
+  <!-- Black Friday Banner -->
+  <div class="black-friday-banner" style="text-align: center;">
+    <h2>Cyber week Deals!</h2>
+    <p>Get amazing discounts on hot products. Limited time offers!</p>
+  </div>
   <!-- The image at the top of the home page, displayed on smaller screens. -->
+
   <div class="home-mobile-hero-banner d-lg-none"></div>
 
   <div class="container-fluid">
@@ -38,7 +65,7 @@
         <div class="row hot-products-row px-xl-6">
 
           <div class="col-12">
-            <h3>Hot Products ( Black Friday)</h3>
+            <h3>Very Hot Products ( Cyber week!)</h3>
           </div>
 
           {{ range $.products }}

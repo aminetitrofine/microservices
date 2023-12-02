@@ -55,6 +55,7 @@ adService:
 
 cartService:
   create: true
+  replicas: 3
   name: cartservice
   resources:
     requests:
@@ -66,6 +67,7 @@ cartService:
 
 checkoutService:
   create: true
+  replicas: 3
   name: checkoutservice
   resources:
     requests:
@@ -77,6 +79,7 @@ checkoutService:
 
 currencyService:
   create: true
+  replicas: 3
   name: currencyservice
   resources:
     requests:
@@ -137,6 +140,7 @@ loadGenerator:
 paymentService:
   create: true
   name: paymentservice
+  replicas: 3
   resources:
     requests:
       cpu: 100m
@@ -148,6 +152,7 @@ paymentService:
 productCatalogService:
   create: true
   name: productcatalogservice
+  replicas: 5
   # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
   resources:
@@ -172,6 +177,7 @@ recommendationService:
 shippingService:
   create: true
   name: shippingservice
+  replicas: 3
   resources:
     requests:
       cpu: 100m

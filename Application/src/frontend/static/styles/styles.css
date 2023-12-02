@@ -655,3 +655,27 @@ the rules below could be extracted.
   width: 10px;
   height: 5px;
 }
+/* Add this CSS to your existing styles */
+
+/* Add this CSS to your existing styles */
+
+.black-friday-banner {
+  background-color: #ff6600; /* Eye-catching color, you can change this */
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  margin: 20px auto; /* Center the banner horizontally with top and bottom margin */
+  max-width: 600px; /* Limit the width for better readability on larger screens */
+  border-radius: 10px; /* Add rounded corners for a modern look */
+}
+
+.black-friday-banner h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.black-friday-banner p {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
