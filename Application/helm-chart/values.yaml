@@ -103,7 +103,7 @@ emailService:
 frontend:
   create: true
   name: frontend
-  replicas: 5
+  replicas: 3
   externalService: true
   cymbalBranding: false
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
@@ -153,7 +153,7 @@ paymentService:
 productCatalogService:
   create: true
   name: productcatalogservice
-  replicas: 5
+  replicas: 3
   # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
   resources:
