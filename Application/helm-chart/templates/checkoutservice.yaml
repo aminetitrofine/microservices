@@ -42,16 +42,6 @@ spec:
         seccompProfile:
           type: {{ .Values.seccompProfile.type }}
         {{- end }}
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - {{ .Values.checkoutService.name }}
-            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: server
         securityContext:
