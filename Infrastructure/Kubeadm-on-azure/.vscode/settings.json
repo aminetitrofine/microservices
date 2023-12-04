@@ -1,0 +1,4 @@
+{
+    "ansible.python.interpreterPath": "/bin/python3",
+    "github-enterprise.uri": "https://github.gsissc.myatos.net"
+}

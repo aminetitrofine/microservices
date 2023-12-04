@@ -1,0 +1,18 @@
+---
+- name: Copy Nginx Ingress Controller manifests to master node and apply
+  hosts: masters  
+
+  tasks:
+    - name: Create the destination directory on the master node
+      file:
+        path: /tmp/nginx-ingress-controller
+        state: directory
+        mode: '0755'
+    - name: Copy Nginx Ingress Controller manifests to master node
+      copy:
+        src: ./nginx-ingress-controller/
+        dest: /tmp/nginx-ingress-controller/
+        remote_src: no
+
+    - name: Setup and install necessary packages
+      script: ./nginx-ingress-controller.sh

@@ -1,0 +1,68 @@
+---
+- name: Create Kubernetes Cluster
+  hosts: masters
+
+  tasks:
+
+    - name: Get first master node IP address from inventory
+      shell: awk '/\[masters\]/{flag=1; next} /^\[/{flag=0} flag{print $1}' ./../Inventory/hosts.ini | tr -d '[:space:]'
+      register: ip_address
+      delegate_to: 127.0.0.1
+
+
+    - name: Initialize cluster with kubeadm and store output in joinCommand.txt in file
+      become: true
+      shell: kubeadm init --control-plane-endpoint {{ ip_address.stdout }}:6443 --pod-network-cidr=10.244.0.0/16 --upload-certs --cri-socket=///var/run/containerd/containerd.sock >> joinCommand.txt
+
+    - name: Create kube directory
+      file:
+        path: "{{ ansible_user_dir }}/.kube"
+        state: directory
+        mode: '0755'
+
+    - name: Copy admin.conf to kube directory
+      become: true
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "{{ ansible_user_dir }}/.kube/config"
+        remote_src: yes
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0600'
+
+    - name: Apply Flannel network
+      command: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+
+    
+    - name: store output of Kubeadm file in file
+      fetch:
+        src: $HOME/joinCommand.txt
+        dest: ./
+        flat: yes      
+
+    
+    - name: prepare join commands for other nodes
+      script: ./prepareJoinCommand.sh
+      delegate_to: 127.0.0.1
+
+    - name: Delete joinCommand.txt file from local machine
+      local_action:
+        module: file
+        path: ./joinCommand.txt
+        state: absent
+    
+
+
+- name: Join other workers to cluster
+  hosts: workers
+
+  tasks:
+    - name: join workers to cluster
+      script: ./joinWorkers.sh
+
+
+- name: Join other masters to the cluster
+  hosts: other_masters
+  tasks:
+    - name: join other masters to the cluster
+      script: ./joinMasters.sh

@@ -1,0 +1,11 @@
+---
+- name: Execute dynamic_inventory_generator.py
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Execute dynamic_inventory_generator.py
+      command: python3 ./../Inventory/dynamic_inventory_generator.py
+      args:
+        chdir: ./../Inventory/

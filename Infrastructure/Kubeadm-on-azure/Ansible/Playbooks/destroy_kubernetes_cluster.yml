@@ -1,0 +1,19 @@
+---
+- name: Reset Kubeadm Initialization
+  hosts: 
+    - masters
+    - workers
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Remove joinCommand.txt and .kube directory
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/home/devops-admin/joinCommand.txt"
+        - "/home/devops-admin/.kube"
+
+    - name: Run kubeadm reset -f
+      shell: kubeadm reset -f --cri-socket=///var/run/containerd/containerd.sock

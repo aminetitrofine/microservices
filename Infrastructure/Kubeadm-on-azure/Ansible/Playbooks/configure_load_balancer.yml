@@ -1,0 +1,35 @@
+---
+- name: Configure the Load Balancer
+  hosts: lb
+  become: yes
+
+  tasks:
+    - name: Update system
+      apt:
+        update_cache: yes
+
+    - name: Install HAProxy
+      apt:
+        name: haproxy 
+        state: latest
+
+    - name: Copy HAProxy configuration file
+      template:
+        src: ./haproxy-config/haproxy.cfg
+        dest: /etc/haproxy/haproxy.cfg
+      notify:
+        - Restart HAProxy
+
+    - name: Copy Load Balancer certifications
+      template:
+        src: /home/titrofine/PFE_ATE_CLOUD/certs/mosig-lb-1.pem
+        dest: /home/devops-admin/mosig-lb-1.pem
+
+  handlers:
+    - name: Restart HAProxy
+      service:
+        name: haproxy
+        state: restarted
+    
+
+

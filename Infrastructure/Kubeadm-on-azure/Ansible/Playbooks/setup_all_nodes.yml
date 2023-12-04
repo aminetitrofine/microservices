@@ -1,0 +1,148 @@
+---
+- name: Configure System and Install Necesary packages
+  hosts: 
+    - masters
+    - workers
+    - other_masters
+  become: yes
+  serial: 100%
+
+# specify python interpreter to be used
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+
+# tasks to be executed on all nodes  
+  tasks:
+    - name: Update system
+      apt:
+        update_cache: yes
+
+    - name: Disable swapoff
+      command: swapoff -a
+      become: yes
+      changed_when: false
+      ignore_errors: true
+
+    - name: Remove swap entry from /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        state: absent
+        regexp: '^/swap.*'
+      become: yes
+      changed_when: false
+      ignore_errors: true
+
+    - name: Install wget and git
+      apt:
+        name: ['wget', 'git']
+        state: present
+
+
+    - name: Download Docker installation script
+      shell: curl -fsSL https://get.docker.com -o get-docker.sh
+      become: yes
+
+    - name: Install Docker
+      command: sh get-docker.sh
+      args:
+        creates: /usr/bin/docker
+      become: yes
+
+    - name: Clone cri-dockerd repository
+      git:
+        repo: https://github.com/Mirantis/cri-dockerd.git
+        dest: cri-dockerd
+        version: master
+      become: yes
+
+    - name: Download and install Go installer
+      get_url:
+        url: https://storage.googleapis.com/golang/getgo/installer_linux
+        dest: ~/installer_linux
+        mode: '0755'
+      become: yes
+
+    - name: Setup and install necessary packages
+      script: ./allNodes.sh
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Install apt-transport-https and curl
+      apt:
+        name: apt-transport-https, curl
+        state: present
+      become: true
+
+    - name: Add Kubernetes apt repository key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+      become: true
+
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+      become: true
+
+    - name: Update apt cache after adding repository
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Install kubelet, kubeadm, and kubectl
+      apt:
+        name: kubelet, kubeadm, kubectl
+        state: present
+      become: true
+
+
+    - name: Hold kubelet, kubeadm, and kubectl packages
+      command: apt-mark hold {{ item }}
+      with_items:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: Add user to the docker group
+      user:
+        name: devops-admin
+        groups: docker
+        append: yes
+      become: true
+
+    - name: Remove containerd configuration file
+      shell: rm /etc/containerd/config.toml
+      become: true
+
+    - name: Restart containerd service
+      service:
+        name: containerd
+        state: restarted
+      become: true
+
+    - name: Download get_helm.sh script
+      get_url:
+        url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        dest: /tmp/get_helm.sh
+        mode: '0700'
+
+    - name: Execute get_helm.sh script
+      command: /tmp/get_helm.sh
+      args:
+        chdir: /tmp
+
+
+
+
+
+
+        
+
+
+
+
+

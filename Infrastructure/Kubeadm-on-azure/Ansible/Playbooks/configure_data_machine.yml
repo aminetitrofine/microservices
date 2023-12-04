@@ -1,0 +1,66 @@
+---
+- name: Install and configure NFS server
+  hosts: data
+  become: yes
+
+  tasks:
+    - name: Update system
+      apt:
+        update_cache: yes
+
+    - name: Install NFS server package
+      package:
+        name: nfs-kernel-server
+        state: present
+    
+
+    - name: Create shared directory
+      file:
+        path: /shared
+        state: directory
+
+    - name: Configure NFS exports
+      lineinfile:
+        path: /etc/exports
+        line: "/shared  172.10.1.0/16(rw,sync,no_root_squash,no_subtree_check)"
+  
+    - name: Export directories
+      command: exportfs -a
+      become: true
+
+    - name: Restart NFS server
+      service:
+        name: nfs-kernel-server
+        state: restarted
+
+- name: Install and configure NFS client
+  hosts: workers
+  become: yes
+
+  tasks:
+    - name: Install NFS client package
+      package:
+        name: nfs-common
+        state: present
+
+    - name: Create mount directory
+      file:
+        path: /mnt/shared
+        state: directory
+
+    - name: Get private data node IP address from inventory
+      shell: 'grep -A 22 "\"name\": \"mosig-data\"" ./../../Infrastructure/terraform.tfstate | sed -n "s/.* \"private_ip_address\": \\(.*\\).*/\\1/p"'
+      register: ip_data
+      delegate_to: 127.0.0.1
+      become: no
+
+
+    - name: Mount NFS share
+      command: mount -o rw {{ ip_data.stdout }}:/shared /mnt/shared
+      become: true
+
+    - name: Add entry to /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        line: "{{ ip_data.stdout }}:/shared   /mnt/shared   nfs   rw   0   0"
+        state: present

@@ -1,0 +1,42 @@
+- name: Join other workers to cluster
+  hosts: workers
+
+  tasks:
+    - name: join workers to cluster
+      script: ./joinWorkers.sh
+
+
+- name: Join other masters to the cluster
+  hosts: other_masters
+  tasks:
+    - name: join other masters to the cluster
+      script: ./joinMasters.sh
+
+
+    - name: Install python3-pip
+      become: yes
+      ansible.builtin.raw: apt update && apt install -y python3-pip
+
+    - name: Install kubernetes Python library
+      become: yes
+      ansible.builtin.raw: pip3 install kubernetes
+      
+    - name: Add Calico Helm repository
+      community.kubernetes.helm_repository:
+        name: projectcalico
+        repo_url: https://docs.tigera.io/calico/charts
+
+    - name: Create namespace tigera-operator
+      community.kubernetes.k8s:
+        api_version: v1
+        kind: Namespace
+        name: tigera-operator
+        state: present
+
+    - name: Install Calico using Helm
+      shell: helm install calico projectcalico/tigera-operator --version v3.26.1 --namespace tigera-operator    
+    - name: store output of Kubeadm file in file
+      fetch:
+        src: $HOME/joinCommand.txt
+        dest: ./
+        flat: yes
