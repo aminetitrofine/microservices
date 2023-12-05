@@ -1,5 +1,5 @@
 ---
-- name: Install Docker on Debian 10
+- name: Launch The Load Testing on the VM 
   hosts: test-machine
   remote_user: devops-admin
   become: no

@@ -136,7 +136,7 @@ To use the project, clone it using the following command:
 
 Then, navigate to the Infrastructure directory and create the terraform.tfvars file using the following command:
 ```shell
-    cd PFE_ATE_CLOUD/Infrastructure
+    cd microservices/Infrastructure/Kubeadm-on-azure
     touch terraform.tfvars
 ```
 Add the Azure connection information to the terraform.tfvars file:

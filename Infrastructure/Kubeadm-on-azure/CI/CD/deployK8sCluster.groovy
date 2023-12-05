@@ -2,12 +2,12 @@ pipeline {
     agent any
     
     environment {
-        TF_VAR_subscription_id = "7ab49b35-ad5d-4963-b328-25a5b04ce665"
-        TF_VAR_client_id = "ae708d97-1507-4ef4-865a-afcd7a584d5d"
-        TF_VAR_client_secret = "LjM8Q~xbCJ7IUUKLvIBt2xBWqAw~djX4LOgISc6M"
-        TF_VAR_tenant_id = "edcb425c-438f-4ba1-bbe9-67eed05d87a7"
-        TF_VAR_num_masters = 1
-        TF_VAR_num_workers = 1
+        //TF_VAR_subscription_id = <Your Subscription_id>
+        //TF_VAR_client_id = <Your Client Id>
+        //TF_VAR_client_secret = <Your Client Secret>
+        //TF_VAR_tenant_id = <Your Azure Intra (Active Directory) Id>
+        //TF_VAR_num_masters = <Number Of masters>
+        //TF_VAR_num_workers = <Number Of workers>
         
     }
     

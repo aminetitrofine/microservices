@@ -69,7 +69,6 @@ module "gcloud" {
   create_cmd_entrypoint = "gcloud"
   create_cmd_body = "container clusters get-credentials online-boutique --zone us-central1-a --project spatial-shore-354923"
   
-
 }
 
 resource "null_resource" "install_argocd" {
