@@ -78,16 +78,8 @@ spec:
             value: "checkoutservice:5050"
           - name: AD_SERVICE_ADDR
             value: "adservice:9555"
-          # # ENV_PLATFORM: One of: local, gcp, aws, azure, onprem, alibaba
-          # # When not set, defaults to "local" unless running in GKE, otherwies auto-sets to gcp
-          # - name: ENV_PLATFORM
-          #   value: "aws"
           - name: ENABLE_PROFILER
             value: "0"
-          # - name: CYMBAL_BRANDING
-          #   value: "true"
-          # - name: FRONTEND_MESSAGE
-          #   value: "Replace this with a message you want to display on all pages."
           resources:
             requests:
               cpu: 100m
@@ -121,3 +113,52 @@ spec:
   - name: http
     port: 80
     targetPort: 8080
+
+
+apiVersion: autoscaling/v2beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: frontend-vpa
+
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  resourcePolicy:
+    containerPolicies:
+      - containerName: server
+        containerResourcePolicy:
+          containerRequests:
+            cpu:
+              target: 100m
+            memory:
+              target: 64Mi
+          containerLimits:
+            cpu:
+              target: 500m
+            memory:
+              target: 128Mi
+
+
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: currency-vpa
+  namespace: online-boutique
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: currencyservice
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: server
+        minAllowed:
+          cpu: 200m
+          memory: 64Mi
+        maxAllowed:
+          cpu: 600m
+          memory: 128Mi

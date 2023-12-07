@@ -14,6 +14,8 @@ resource "google_container_cluster" "my_cluster" {
   }
   deletion_protection = false
 
+  
+
 
 }
 resource "google_container_node_pool" "primary_nodes" {
@@ -36,6 +38,7 @@ resource "google_container_node_pool" "primary_nodes" {
     create = "20m"
     update = "20m"
   }
+
 
 
   node_config {
@@ -68,6 +71,7 @@ module "gcloud" {
 
   create_cmd_entrypoint = "gcloud"
   create_cmd_body = "container clusters get-credentials online-boutique --zone us-central1-a --project spatial-shore-354923"
+
   
 }
 
@@ -83,7 +87,6 @@ resource "null_resource" "install_argocd" {
 
   depends_on = [
     module.gcloud,
-    google_container_cluster.my_cluster
 
   ]
 }

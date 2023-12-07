@@ -1,0 +1,21 @@
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: currency-vpa
+  namespace: online-boutique
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: currencyservice
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: server
+        minAllowed:
+          cpu: 200m
+          memory: 64Mi
+        maxAllowed:
+          cpu: 600m
+          memory: 128Mi
