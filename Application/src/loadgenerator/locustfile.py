@@ -71,11 +71,11 @@ class UserBehavior(TaskSet):
 
     tasks = {index: 1,
         setCurrency: 2,
-        browseProduct: 20, # Increase the frequency of browsing products
+        browseProduct: 10, # Increase the frequency of browsing products
         addToCart: 6, # Increase the frequency of adding products to the cart
         viewCart: 6,
-        checkout: 4} # Increase the frequency of checkout
+        checkout: 6} # Increase the frequency of checkout
 
 class WebsiteUser(HttpUser):
     tasks = [UserBehavior]
-    wait_time = between(1, 10)
+    wait_time = between(0.1, 2) # Shorter wait times to simulate a fast-paced Black Friday scenario
